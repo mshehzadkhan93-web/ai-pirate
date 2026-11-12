@@ -140,7 +140,7 @@ class PirateViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 val client = GeminiClient(apiKey)
                 val wav = client.synthesize(text.take(900), ttsVoice, settings.getTtsModel())
-                audioPlayer.play(getApplication()) { isSpeaking = false }
+                audioPlayer.play(getApplication(), wav) { isSpeaking = false }
             } catch (e: Exception) {
                 error = e.message ?: "Voice failed, matey."
                 isSpeaking = false
