@@ -26,6 +26,10 @@ class PirateViewModel(application: Application) : AndroidViewModel(application) 
         private set
     var ttsVoice by mutableStateOf("Aoede")
         private set
+    var chatModel by mutableStateOf("gemini-3.8-flash")
+        private set
+    var ttsModel by mutableStateOf("gemini-3.8-flash-tts")
+        private set
     var messages by mutableStateOf<List<ChatMessage>>(emptyList())
         private set
     var isThinking by mutableStateOf(false)
@@ -39,6 +43,8 @@ class PirateViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             apiKey = settings.getApiKey()
             ttsVoice = settings.getTtsVoice()
+            chatModel = settings.getChatModel()
+            ttsModel = settings.getTtsModel()
             messages = memory.load()
             if (messages.isEmpty()) {
                 messages = listOf(
@@ -58,6 +64,8 @@ class PirateViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             apiKey = settings.getApiKey()
             ttsVoice = settings.getTtsVoice()
+            chatModel = settings.getChatModel()
+            ttsModel = settings.getTtsModel()
         }
     }
 
@@ -73,6 +81,26 @@ class PirateViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             settings.setTtsVoice(voice)
             ttsVoice = voice
+        }
+    }
+
+    /** Model picker: Google retires models sometimes — the user can type a
+     *  new model name here instead of waiting for another app update. */
+    fun saveChatModel(model: String, onDone: () -> Unit = {}) {
+        viewModelScope.launch {
+            val clean = model.trim().ifBlank { "gemini-3.8-flash" }
+            settings.setChatModel(clean)
+            chatModel = clean
+            onDone()
+        }
+    }
+
+    fun saveTtsModel(model: String, onDone: () -> Unit = {}) {
+        viewModelScope.launch {
+            val clean = model.trim().ifBlank { "gemini-3.8-flash-tts" }
+            settings.setTtsModel(clean)
+            ttsModel = clean
+            onDone()
         }
     }
 

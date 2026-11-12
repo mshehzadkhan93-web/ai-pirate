@@ -48,7 +48,7 @@ import com.captain.aipirate.viewmodel.PirateViewModel
 
 /**
  * Voice chat: mic input via Android SpeechRecognizer (speech-to-text only),
- * replies spoken with NATURAL Gemini TTS (gemini-2.5-flash-preview-tts).
+ * replies spoken with NATURAL Gemini TTS (gemini-3.8-flash-tts).
  * Android's robotic TextToSpeech is never used for replies.
  */
 @Composable

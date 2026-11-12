@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.captain.aipirate.BuildConfig
 import com.captain.aipirate.ui.theme.DeepSea
 import com.captain.aipirate.ui.theme.FoamWhite
 import com.captain.aipirate.ui.theme.MutedFoam
@@ -44,6 +45,9 @@ fun SettingsScreen(viewModel: PirateViewModel) {
     var keyInput by remember { mutableStateOf("") }
     var saved by remember { mutableStateOf(false) }
     var voice by remember { mutableStateOf(viewModel.ttsVoice) }
+    var chatModelInput by remember(viewModel.chatModel) { mutableStateOf(viewModel.chatModel) }
+    var ttsModelInput by remember(viewModel.ttsModel) { mutableStateOf(viewModel.ttsModel) }
+    var modelsSaved by remember { mutableStateOf(false) }
     val voices = listOf("Aoede", "Kore", "Puck", "Charon", "Zephyr")
 
     Column(
@@ -120,6 +124,75 @@ fun SettingsScreen(viewModel: PirateViewModel) {
             shape = RoundedCornerShape(14.dp)
         ) {
             Column(Modifier.padding(16.dp)) {
+                Text("🧠 AI Models", color = PirateGold, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "Google sometimes retires a model (that is why chat stopped " +
+                        "working). If it happens again, just type the new model " +
+                        "name here — no app update needed, matey!",
+                    color = FoamWhite, fontSize = 13.sp
+                )
+                Spacer(Modifier.height(12.dp))
+                Text("Chat model", color = PirateGold, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                Spacer(Modifier.height(6.dp))
+                OutlinedTextField(
+                    value = chatModelInput,
+                    onValueChange = { chatModelInput = it; modelsSaved = false },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("gemini-3.8-flash", color = MutedFoam) },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = FoamWhite,
+                        unfocusedTextColor = FoamWhite,
+                        focusedContainerColor = SeaNavyLight,
+                        unfocusedContainerColor = SeaNavyLight,
+                        focusedBorderColor = PirateGold,
+                        unfocusedBorderColor = SeaNavyLight
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                Spacer(Modifier.height(10.dp))
+                Text("Voice (TTS) model", color = PirateGold, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                Spacer(Modifier.height(6.dp))
+                OutlinedTextField(
+                    value = ttsModelInput,
+                    onValueChange = { ttsModelInput = it; modelsSaved = false },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("gemini-3.8-flash-tts", color = MutedFoam) },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = FoamWhite,
+                        unfocusedTextColor = FoamWhite,
+                        focusedContainerColor = SeaNavyLight,
+                        unfocusedContainerColor = SeaNavyLight,
+                        focusedBorderColor = PirateGold,
+                        unfocusedBorderColor = SeaNavyLight
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                Spacer(Modifier.height(10.dp))
+                Button(
+                    onClick = {
+                        viewModel.saveChatModel(chatModelInput) {
+                            viewModel.saveTtsModel(ttsModelInput) { modelsSaved = true }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = PirateGold, contentColor = DeepSea),
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("Save Models", fontWeight = FontWeight.Bold) }
+                if (modelsSaved) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("✅ Models saved. Chat and voice will use them now.", color = PirateGold, fontSize = 13.sp)
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Card(
+            colors = CardDefaults.cardColors(containerColor = SeaNavy),
+            shape = RoundedCornerShape(14.dp)
+        ) {
+            Column(Modifier.padding(16.dp)) {
                 Text("🎙️ Voice (Gemini TTS)", color = PirateGold, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Spacer(Modifier.height(6.dp))
                 Text(
@@ -169,7 +242,7 @@ fun SettingsScreen(viewModel: PirateViewModel) {
 
         Spacer(Modifier.height(16.dp))
         Text(
-            "AI Pirate v1.0 • Captain Reef is an original AI character. " +
+            "AI Pirate v${BuildConfig.VERSION_NAME} • Captain Reef is an original AI character. " +
                 "He is not Johnny Depp or any movie character.",
             color = MutedFoam, fontSize = 12.sp
         )

@@ -42,8 +42,16 @@ class SettingsStore(private val context: Context) {
     }
 
     suspend fun getTtsModel(): String =
-        context.dataStore.data.map { it[KEY_TTS_MODEL] ?: "gemini-2.5-flash-preview-tts" }.first()
+        context.dataStore.data.map { it[KEY_TTS_MODEL] ?: "gemini-3.8-flash-tts" }.first()
+
+    suspend fun setTtsModel(value: String) {
+        context.dataStore.edit { it[KEY_TTS_MODEL] = value.trim() }
+    }
 
     suspend fun getChatModel(): String =
-        context.dataStore.data.map { it[KEY_CHAT_MODEL] ?: "gemini-2.0-flash" }.first()
+        context.dataStore.data.map { it[KEY_CHAT_MODEL] ?: "gemini-3.8-flash" }.first()
+
+    suspend fun setChatModel(value: String) {
+        context.dataStore.edit { it[KEY_CHAT_MODEL] = value.trim() }
+    }
 }

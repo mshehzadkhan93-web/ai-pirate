@@ -18,7 +18,7 @@ import org.json.JSONObject
 /**
  * The pirate's brain — Google Gemini ONLY.
  *
- * Chat model: gemini-2.0-flash. Voice: gemini-2.5-flash-preview-tts,
+ * Chat model: gemini-3.8-flash. Voice: gemini-3.8-flash-tts,
  * voice Aoede by default. The API key is passed in from the Settings
  * screen (typed by the user on the phone) and sent as a ?key= query
  * parameter, exactly how the Gemini API expects it.
@@ -107,7 +107,7 @@ class GeminiClient(private val apiKey: String) {
     suspend fun synthesize(
         text: String,
         voice: String,
-        model: String = "gemini-2.5-flash-preview-tts"
+        model: String = "gemini-3.8-flash-tts"
     ): ByteArray = withContext(Dispatchers.IO) {
         val body = JSONObject()
             .put(
